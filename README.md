@@ -24,6 +24,9 @@ npm run test.
 
 #####  6. View the URL/endpoint
 **http://localhost:3030/api/images**
+
 **http://localhost:3030/api/images?fileName=fjord.jpg&width=400&height=400**
+
 **http://localhost:3030/api/images**
+
 **http://localhost:3030/api/images?fileName=blabla.jpg&width=400&height=400**
