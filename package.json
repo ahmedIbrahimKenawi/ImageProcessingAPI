@@ -1,5 +1,5 @@
 {
-  "name": "theproject",
+  "name": "imageprocessingapi",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/server/app.js",
