@@ -1,15 +1,14 @@
-import { Request, Response } from "express";
-import sharp from "sharp";
-import {
-  createReadStream,
-  createWriteStream,
-  ReadStream,
-  WriteStream,
-} from "fs";
+import { Request, Response, NextFunction } from "express";
+import { createReadStream } from "fs";
 import { readdir } from "fs/promises";
-import { Duplex } from "stream";
+import processBySharp from "./utilities/processBySharp";
+import save from "./utilities/save";
 
-function validateQueryParameters(req: Request, res: Response, next: Function) {
+function validateQueryParameters(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { fileName, width, height } = req.query;
 
   if (fileName && Number(width) && Number(height)) {
@@ -19,9 +18,8 @@ function validateQueryParameters(req: Request, res: Response, next: Function) {
   }
 }
 
-async function doesImageExist(req: Request, res: Response, next: Function) {
-  let { fileName } = req.query;
-  fileName = String(fileName);
+async function doesImageExist(req: Request, res: Response, next: NextFunction) {
+  const fileName = String(req.query.fileName);
 
   const fullDir = await readdir("./assets/full");
 
@@ -32,7 +30,11 @@ async function doesImageExist(req: Request, res: Response, next: Function) {
   }
 }
 
-async function doesthumbnailExist(req: Request, res: Response, next: Function) {
+async function doesthumbnailExist(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { fileName, width, height } = req.query;
 
   const thumbnail = `${width}-${height}-${fileName}`;
@@ -47,28 +49,20 @@ async function doesthumbnailExist(req: Request, res: Response, next: Function) {
 }
 
 async function imageProcessing(req: Request, res: Response) {
-  const { fileName, width, height } = req.query;
+  const fileName = String(req.query.fileName);
+  const width = Number(req.query.width);
+  const height = Number(req.query.height);
 
   const thumbnail = `${width}-${height}-${fileName}`;
 
-  const fullImageReadStream: ReadStream = createReadStream(
-    `./assets/full/${fileName}`
-  );
-
-  const thumbnailWriteStream: WriteStream = createWriteStream(
-    `./assets/thumbnail/${thumbnail}`
-  );
-
-  const modifier: Duplex = sharp().resize(Number(width), Number(height));
-
   // process the image
-  fullImageReadStream.pipe(modifier);
+  const newImageStream = processBySharp(fileName, width, height);
 
   // save thumbnail to file system
-  modifier.pipe(thumbnailWriteStream);
+  save(newImageStream, thumbnail);
 
-  // send thumbnail to file system
-  modifier.pipe(res);
+  // send thumbnail to client
+  newImageStream.pipe(res);
 }
 
 export {

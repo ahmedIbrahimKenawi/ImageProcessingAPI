@@ -2,4 +2,7 @@
 *.json
 .eslintignore
 .prettierignore
-build
+.gitignore
+README.md
+dist
+assets

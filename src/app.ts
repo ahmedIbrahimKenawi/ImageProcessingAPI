@@ -1,13 +1,13 @@
 import express, { Application } from "express";
 import router from "./routes/router";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 const app: Application = express();
 const port = "3030";
 
 app.use(router);
 
-app.use((err: Error, req: Request, res: Response, next: Function) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send(err.message);
   next();

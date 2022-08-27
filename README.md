@@ -23,6 +23,9 @@ npm run test.
 ```
 
 #####  6. View the URL/endpoint
+
+**http://localhost:3030/api/images?fileName=santamonica.jpg&width=340&height=300**
+
 **http://localhost:3030/api/images**
 
 **http://localhost:3030/api/images?fileName=fjord.jpg&width=400&height=aaaa**

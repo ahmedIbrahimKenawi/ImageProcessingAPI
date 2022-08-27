@@ -16,8 +16,8 @@ images.use(cors());
 images.get(
   "/",
   validateQueryParameters,
-  doesImageExist,
   doesthumbnailExist,
+  doesImageExist,
   imageProcessing
 );
 
